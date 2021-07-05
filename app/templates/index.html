@@ -1,0 +1,71 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Bootcamp courses {% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-3">
+            <h2>Add a new course</h2>
+            <div class="card p-3">
+                <form action="{% url 'create' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        Name: <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="mb-3">
+                        Release Date: <input type="date" class="form-control" name="date">
+                    </div>
+                    <div class="mb-3">
+                        Description: <textarea type="text" class="form-control" name="desc"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Create</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-9">
+            
+            <h2>Courses</h2>
+            <table class="table table-light table-striped table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Realease Date</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <th scope="row">{{ course.id }}</td>
+                        <td>{{ course.name }}</td>
+                        <td>{{ course.desc }}</td>
+                        <td>{{ course.date }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-info"
+                            href="/comments/{{course.id}}">
+                                <i class="bi bi-chat-text-fill"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                            onclick="modalDelete({{course.id}})"
+                            href="#">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+

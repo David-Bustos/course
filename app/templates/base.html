@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    {% load static %}
+    <!-- Import Icon for Title -->
+    <link rel = "icon" href = "https://cdn.iconscout.com/icon/free/png-256/python-2752092-2284909.png" type = "image/x-icon">
+    
+    <!-- Import Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <!-- Import Bootswatch - Themes(sketchy, darkly, superhero, united, vapor, etc.)-->
+    <link rel="stylesheet" href="https://bootswatch.com/5/sketchy/bootstrap.min.css">
+
+    <!-- Import Icons Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    
+    <!-- Import jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <!-- Import Toastr JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    
+    <!--  Import Sweeralert2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Import my Styles -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script>
+        $('document').ready(function () {
+// Mensajes de exito y error
+            {% if messages %}   
+                {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            Swal.fire({
+                            icon: '{{message.tags}}',
+                            title: '{{message}}',
+                            confirmButtonColor: '#303030',
+                            })
+                        {% else %}
+                            toastr.options = {
+                                "closeButton": true,
+                                "progressBar": true,
+                                "newestOnTop": false,
+                            }
+                            toastr.{{ message.tags }}('{{message}}')
+                        {% endif %}
+                {% endfor %}
+            {% endif %}
+        });
+// Modal para confirmar eliminacion
+        function modalDelete(id) {
+            console.log(id)
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#303030',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // $.ajax("/shows/"+id+"/destroy")
+                    window.location.href = "/delete/"+id
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'   
+                    )
+                }
+            })
+        }
+        {% block script %}{% endblock %}
+    </script> 
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-journal-text"></i>
+                <!-- <img src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top"> -->
+                Courses
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Add new show</a>
+                </li> -->
+                <li class="nav-item d-flex">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
